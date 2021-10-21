@@ -3,8 +3,8 @@ const path = require('path')
 const app = express()
 const port = process.env.port ||5000
 const mongoose = require('mongoose');
-const cors = require("cors");
-app.use(cors(["localhost:3000", "localhost:5000"]))
+// const cors = require("cors");
+// app.use(cors(["localhost:3000", "localhost:5000"]))
 app.use(express.json())
 app.use('/', express.static(path.join(__dirname, 'web/build')))
 mongoose.connect('mongodb+srv://Mohsin:Mohsin20618@cluster0.tdyk5.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
