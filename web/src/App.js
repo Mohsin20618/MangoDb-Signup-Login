@@ -1,63 +1,64 @@
-import './App.css';
-import Dashboard from './Components/Dashboard/Dashboard'
-import Signup from './Components/Signup/Signup'
-import Login from './Components/Login/Login'
-import {
-
-  Switch,
-  Route,
-
-} from "react-router-dom";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import Signup from "./Components/Signup/Signup";
+import Login from "./Components/Login/Login";
+import { Switch, Route } from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-
+import { Nav, Navbar, Container } from "react-bootstrap";
 
 function App() {
   let history = useHistory();
   return (
     <>
-    <Box sx={{ flexGrow: 1 }}>
-    <AppBar position="static" color='secondary'>
-      <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2 }}
-        >
-         
-        </IconButton>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-         Database
-        </Typography>
-        <Button color="inherit" onClick={()=>{history.push("/")}}>Dashboard</Button>
-        <Button color="inherit" onClick={()=>{history.push("/Sign")}}>Signup</Button>
-        <Button color="inherit" onClick={()=>{history.push("/Log")}}>Login</Button>
-       
-      </Toolbar>
-    </AppBar>
-  </Box>
-  <Switch>
+      <Navbar bg="primary" variant="dark">
+        <Container>
+          <Navbar.Brand
+            onClick={() => {
+              history.push("/");
+            }}
+          >
+            Database
+          </Navbar.Brand>
+          <Nav className="me-auto">
+            <Nav.Link
+              onClick={() => {
+                history.push("/");
+              }}
+            >
+              Dashboard
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                history.push("/Sign");
+              }}
+            >
+              Signup
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                history.push("/Log");
+              }}
+            >
+              Login
+            </Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar>
+      <Switch>
         <Route path="/Log">
-          <Login/>
+          <Login />
         </Route>
 
         <Route path="/Sign">
-          <Signup/>
+          <Signup />
         </Route>
 
         <Route exact path="/">
           <Dashboard />
         </Route>
-
       </Switch>
-  </>
+    </>
   );
 }
 
