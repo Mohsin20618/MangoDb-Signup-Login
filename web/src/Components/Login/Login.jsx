@@ -38,8 +38,10 @@ function Login() {
         })
         .then((res) => {
           console.log("res: ", res.data);
-          alert("Signin Successfully");
+         alert(res.data)
           if (res.data.email) {
+            localStorage.setItem('user',JSON.stringify(res.data))
+            alert("Signin Successfully");
             history.push("/");
           }
         });
