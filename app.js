@@ -2,9 +2,9 @@ const express = require('express')
 const path = require('path')
 const app = express()
 const port = process.env.PORT ||5000
-const bcrypt = require("bcryptjs")
 const mongoose = require('mongoose');
 const cors = require("cors");
+var bcrypt = require("bcrypt-inzi")
 app.use(cors(["localhost:3000", "localhost:5000"]))
 app.use(express.json())
 app.use('/', express.static(path.join(__dirname, 'web/build')))
@@ -15,28 +15,7 @@ const UserSchema = mongoose.Schema({
     password:String, 
     Created:{ type: Date, default: Date.now },
 })
-UserSchema.pre("save", function (next) {
-    const user = this
-  
-    if (this.isModified("password") || this.isNew) {
-      bcrypt.genSalt(10, function (saltError, salt) {
-        if (saltError) {
-          return next(saltError)
-        } else {
-          bcrypt.hash(user.password, salt, function(hashError, hash) {
-            if (hashError) {
-              return next(hashError)
-            }
-  
-            user.password = hash
-            next()
-          })
-        }
-      })
-    } else {
-      return next()
-    }
-  })
+
 const User =mongoose.model("User", UserSchema)
 
 app.post('/api/v1/login', (req, res) => {
@@ -48,28 +27,23 @@ app.post('/api/v1/login', (req, res) => {
         res.status(403).send("required field missing");
         return;
     }
-
-
-
-
     User.findOne({ email: req.body.email }, (err, user) => {
 
         if (err) {
             res.status(500).send("error in getting database")
         } else {
             if (user) {
-
-                bcrypt.compare(req.body.password, user.password, function(error, isMatch) {
-                    if (error) {
-                      throw error
-                    } else if (!isMatch) {
+                 bcrypt.varifyHash(req.body.password, user.password).then(result => {
+                    if (result) {
+                        console.log("Password matches!");
+                        res.send(user)
+                    } else {
                       console.log("Password doesn't match!")
                       res.send('Password doesnt match!')
-                    } else {
-                        res.send(user)
-                      console.log("Password matches!")
                     }
-                  })
+                }).catch(e => {
+                    console.log("error: ", e)
+                })
 
             } else {
                 res.send("user not found");
@@ -85,30 +59,19 @@ app.post('/api/v1/signup', (req, res) => {
         return;
     }
     else{
+      bcrypt.stringToHash(req.body.password).then(hash => {
+        console.log("hash: ", hash);
     let newUser=new User({
         name:req.body.name,
         email:req.body.email,
-        password:req.body.password
-    })
+        password:hash
+    })})
     newUser.save(() => {
         console.log("data saved")
         res.send('profile created')
     })}
 })
-// app.get('/', (req, res) => {
-//   res.send('Hello World!')
-// })
-// app.get('/profile', (req, res) => {
-//     User.find({},(err,data)=>{
-//         if(err){
-//             res.status(500).send('error in etting database')
-//         }
-//         else{
-//             res.send(data)
-//         }
-//     });
-    
-// })
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })

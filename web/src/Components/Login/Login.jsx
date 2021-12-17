@@ -38,11 +38,14 @@ function Login() {
         })
         .then((res) => {
           console.log("res: ", res.data);
-         alert(res.data)
+        
           if (res.data.email) {
             localStorage.setItem('user',JSON.stringify(res.data))
             alert("Signin Successfully");
             history.push("/");
+          }
+          else{
+            alert(res.data)
           }
         });
     },
